@@ -1,6 +1,7 @@
 import { Document } from 'mongoose'
 
 export interface IUser extends Document {
+  // id: string
   email: string
   password: string
   name: string
@@ -9,6 +10,7 @@ export interface IUser extends Document {
 }
 
 export interface ITask extends Document {
+  // _id: string
   title: string
   description?: string
   status: 'pending' | 'in-progress' | 'completed'

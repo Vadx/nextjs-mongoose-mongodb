@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { Edit, Trash2, Calendar, Clock } from 'lucide-react'
 import { formatDate } from '@/lib/utils'
 import TaskForm from './TaskForm'
+import { toast } from 'sonner'
 
 interface TaskCardProps {
   task: ITask
@@ -30,9 +31,11 @@ export default function TaskCard({ task, onTaskUpdated, onTaskDeleted }: TaskCar
       
       if (response.ok) {
         onTaskDeleted(task._id.toString())
+        toast.success('Task deleted successfully')
       }
     } catch (error) {
       console.error('Error deleting task:', error)
+      toast.error('Failed to delete task')
     } finally {
       setIsDeleting(false)
     }

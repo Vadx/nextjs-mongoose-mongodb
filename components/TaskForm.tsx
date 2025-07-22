@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { toast } from "sonner"
 
 interface TaskFormProps {
   task?: ITask
@@ -48,7 +49,9 @@ export default function TaskForm({ task, onTaskCreated, onCancel }: TaskFormProp
 
       if (response.ok) {
         const savedTask = await response.json()
-        onTaskCreated(savedTask)
+          onTaskCreated(savedTask)
+          onCancel()
+          toast.success(task ? 'Task updated successfully' : 'Task created successfully')
       } else {
         const errorData = await response.json()
         if (errorData.details) {
