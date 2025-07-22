@@ -20,7 +20,7 @@ export async function GET(
     
     const task = await Task.findOne({
       _id: params.id,
-      userId: session.user.id
+      userId: session.user.email
     })
     
     if (!task) {
@@ -53,7 +53,7 @@ export async function PUT(
     await dbConnect()
 
     const task = await Task.findOneAndUpdate(
-      { _id: params.id, userId: session.user.id },
+      { _id: params.id, userId: session.user.email },
       {
         ...validatedData,
         dueDate: validatedData.dueDate ? new Date(validatedData.dueDate) : undefined,

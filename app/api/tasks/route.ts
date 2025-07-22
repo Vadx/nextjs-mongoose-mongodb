@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
 
     await dbConnect()
     
-    const tasks = await Task.find({ userId: session.user.id }).sort({ createdAt: -1 })
+    const tasks = await Task.find({ userId: session.user.email }).sort({ createdAt: -1 })
     
     return NextResponse.json(tasks)
   } catch (error) {
@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
 
     const task = new Task({
       ...validatedData,
-      userId: session.user.id,
+      userId: session.user.email,
       dueDate: validatedData.dueDate ? new Date(validatedData.dueDate) : undefined,
     })
 
