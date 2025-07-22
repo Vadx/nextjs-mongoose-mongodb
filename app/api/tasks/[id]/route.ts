@@ -20,14 +20,14 @@ export async function GET(
       return NextResponse.json({ error: 'Invalid task id' }, { status: 400 })
     }
     await dbConnect()
-    const userId = (session.user as typeof session.user & { id?: string }).id
+ 
     const task = await Task.findOne({
       _id: params.id,
-      userId: userId
-    })
+      userId: session.user.email
+    })  
     if (!task) {
       return NextResponse.json({ error: 'Task not found' }, { status: 404 })
-    }
+    }   
     return NextResponse.json(task)
   } catch {
     return NextResponse.json(
@@ -42,7 +42,7 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await getServerSession(authOptions)   
     if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -52,9 +52,9 @@ export async function PUT(
     const body = await request.json()
     const validatedData = taskSchema.partial().parse(body)
     await dbConnect()
-    const userId = (session.user as typeof session.user & { id?: string }).id
+
     const task = await Task.findOneAndUpdate(
-      { _id: params.id, userId: userId },
+      { _id: params.id, userId: session.user.email },
       {
         ...validatedData,
         dueDate: validatedData.dueDate ? new Date(validatedData.dueDate) : undefined,
@@ -84,22 +84,21 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await getServerSession(authOptions)   
     if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
     if (!mongoose.Types.ObjectId.isValid(params.id)) {
       return NextResponse.json({ error: 'Invalid task id' }, { status: 400 })
     }
-    await dbConnect()
-    const userId = (session.user as typeof session.user & { id?: string }).id
+    await dbConnect()   
     const task = await Task.findOneAndDelete({
       _id: params.id,
-      userId: userId
-    })
+      userId: session.user.email
+    })    
     if (!task) {
       return NextResponse.json({ error: 'Task not found' }, { status: 404 })
-    }
+    }    
     return NextResponse.json({ message: 'Task deleted successfully' })
   } catch {
     return NextResponse.json(
