@@ -14,10 +14,10 @@ export default function Home() {
         </p>
         <div className="mt-10 flex items-center justify-center gap-x-6">
           <Link href="/login">
-            <Button>Get Started</Button>
+            <Button>Login</Button>
           </Link>
-          <Link href="/dashboard">
-            <Button variant="outline">View Dashboard</Button>
+          <Link href="/sign-up">
+            <Button variant="outline">Sign Up</Button>
           </Link>
         </div>
       </div>

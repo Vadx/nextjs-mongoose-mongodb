@@ -13,9 +13,17 @@ const UserSchema = new Schema<IUser>({
     required: [true, 'Password is required'],
     minlength: 6,
   },
-  name: {
+  firstName: {
     type: String,
-    required: [true, 'Name is required'],
+    required: [true, 'First Name is required'],
+  },
+  lastName: {
+    type: String,
+    required: [true, 'Last Name is required'],
+  },
+  isActive: {
+    type: Boolean,
+    default: true,
   },
 }, {
   timestamps: true,
