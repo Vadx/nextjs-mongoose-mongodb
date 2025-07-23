@@ -1,68 +1,68 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
-import { ITask } from '@/types'
-import TaskCard from '@/components/TaskCard'
-import TaskForm from '@/components/TaskForm'
-import Navbar from '@/components/Navbar'
-import { Button } from '@/components/ui/button'
-import { Plus } from 'lucide-react'
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { ITask } from "@/types";
+import TaskCard from "@/components/TaskCard";
+import TaskForm from "@/components/TaskForm";
+import Navbar from "@/components/Navbar";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 
 export default function DashboardPage() {
-  const { data: session, status } = useSession()
-  const router = useRouter()
-  const [tasks, setTasks] = useState<ITask[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [showForm, setShowForm] = useState(false)
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  const [tasks, setTasks] = useState<ITask[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/login')
-      return
+    if (status === "unauthenticated") {
+      router.push("/login");
+      return;
     }
 
-    if (status === 'authenticated') {
-      fetchTasks()
+    if (status === "authenticated") {
+      fetchTasks();
     }
-  }, [status, router])
+  }, [status, router]);
 
   const fetchTasks = async () => {
     try {
-      const response = await fetch('/api/tasks')
+      const response = await fetch("/api/tasks");
       if (response.ok) {
-        const data = await response.json()
-        setTasks(data)
+        const data = await response.json();
+        setTasks(data);
       }
     } catch (error) {
-      console.error('Error fetching tasks:', error)
+      console.error("Error fetching tasks:", error);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleTaskCreated = (newTask: ITask) => {
-    setTasks([newTask, ...tasks])
-    setShowForm(false)
-  }
+    setTasks([newTask, ...tasks]);
+    setShowForm(false);
+  };
 
   const handleTaskUpdated = (updatedTask: ITask) => {
-    setTasks(tasks.map(task => 
-      task._id === updatedTask._id ? updatedTask : task
-    ))
-  }
+    setTasks(
+      tasks.map((task) => (task._id === updatedTask._id ? updatedTask : task)),
+    );
+  };
 
   const handleTaskDeleted = (taskId: string) => {
-    setTasks(tasks.filter(task => task._id !== taskId))
-  }
+    setTasks(tasks.filter((task) => task._id !== taskId));
+  };
 
-  if (status === 'loading' || isLoading) {
-    return <div>Loading...</div>
+  if (status === "loading" || isLoading) {
+    return <div>Loading...</div>;
   }
 
   if (!session) {
-    return null
+    return null;
   }
 
   return (
@@ -104,5 +104,5 @@ export default function DashboardPage() {
         )}
       </div>
     </div>
-  )
+  );
 }

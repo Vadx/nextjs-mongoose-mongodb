@@ -1,85 +1,99 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { ITask, CreateTaskRequest } from '@/types'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { toast } from "sonner"
+import { useState } from "react";
+import { ITask, CreateTaskRequest } from "@/types";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { toast } from "sonner";
 
 interface TaskFormProps {
-  task?: ITask
-  onTaskCreated: (task: ITask) => void
-  onCancel: () => void
+  task?: ITask;
+  onTaskCreated: (task: ITask) => void;
+  onCancel: () => void;
 }
 
-export default function TaskForm({ task, onTaskCreated, onCancel }: TaskFormProps) {
+export default function TaskForm({
+  task,
+  onTaskCreated,
+  onCancel,
+}: TaskFormProps) {
   const [formData, setFormData] = useState<CreateTaskRequest>({
-    title: task?.title || '',
-    description: task?.description || '',
-    status: task?.status || 'pending',
-    priority: task?.priority || 'medium',
-    dueDate: task?.dueDate ? new Date(task.dueDate).toISOString().split('T')[0] : '',
-  })
-  const [isLoading, setIsLoading] = useState(false)
-  const [errors, setErrors] = useState<Record<string, string>>({})
+    title: task?.title || "",
+    description: task?.description || "",
+    status: task?.status || "pending",
+    priority: task?.priority || "medium",
+    dueDate: task?.dueDate
+      ? new Date(task.dueDate).toISOString().split("T")[0]
+      : "",
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-    setErrors({})
+    e.preventDefault();
+    setIsLoading(true);
+    setErrors({});
 
     try {
-      const url = task ? `/api/tasks/${task._id}` : '/api/tasks'
-      const method = task ? 'PUT' : 'POST'
-      
+      const url = task ? `/api/tasks/${task._id}` : "/api/tasks";
+      const method = task ? "PUT" : "POST";
+
       const response = await fetch(url, {
         method,
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           ...formData,
           dueDate: formData.dueDate || undefined,
         }),
-      })
+      });
 
       if (response.ok) {
-        const savedTask = await response.json()
-          onTaskCreated(savedTask)
-          onCancel()
-          toast.success(task ? 'Task updated successfully' : 'Task created successfully')
+        const savedTask = await response.json();
+        onTaskCreated(savedTask);
+        onCancel();
+        toast.success(
+          task ? "Task updated successfully" : "Task created successfully",
+        );
       } else {
-        const errorData = await response.json()
+        const errorData = await response.json();
         if (errorData.details) {
-          const fieldErrors: Record<string, string> = {}
+          const fieldErrors: Record<string, string> = {};
           errorData.details.forEach((error: any) => {
-            fieldErrors[error.path[0]] = error.message
-          })
-          setErrors(fieldErrors)
+            fieldErrors[error.path[0]] = error.message;
+          });
+          setErrors(fieldErrors);
         }
       }
     } catch (error) {
-      console.error('Error saving task:', error)
+      console.error("Error saving task:", error);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleInputChange = (field: keyof CreateTaskRequest, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }))
+    setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }))
+      setErrors((prev) => ({ ...prev, [field]: "" }));
     }
-  }
+  };
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{task ? 'Edit Task' : 'Create New Task'}</CardTitle>
+        <CardTitle>{task ? "Edit Task" : "Create New Task"}</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -88,7 +102,7 @@ export default function TaskForm({ task, onTaskCreated, onCancel }: TaskFormProp
             <Input
               id="title"
               value={formData.title}
-              onChange={(e) => handleInputChange('title', e.target.value)}
+              onChange={(e) => handleInputChange("title", e.target.value)}
               placeholder="Enter task title"
             />
             {errors.title && (
@@ -101,7 +115,7 @@ export default function TaskForm({ task, onTaskCreated, onCancel }: TaskFormProp
             <Textarea
               id="description"
               value={formData.description}
-              onChange={(e) => handleInputChange('description', e.target.value)}
+              onChange={(e) => handleInputChange("description", e.target.value)}
               placeholder="Enter task description (optional)"
               rows={3}
             />
@@ -115,7 +129,7 @@ export default function TaskForm({ task, onTaskCreated, onCancel }: TaskFormProp
               <Label htmlFor="status">Status</Label>
               <Select
                 value={formData.status}
-                onValueChange={(value) => handleInputChange('status', value)}
+                onValueChange={(value) => handleInputChange("status", value)}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select status" />
@@ -132,7 +146,7 @@ export default function TaskForm({ task, onTaskCreated, onCancel }: TaskFormProp
               <Label htmlFor="priority">Priority</Label>
               <Select
                 value={formData.priority}
-                onValueChange={(value) => handleInputChange('priority', value)}
+                onValueChange={(value) => handleInputChange("priority", value)}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select priority" />
@@ -152,7 +166,7 @@ export default function TaskForm({ task, onTaskCreated, onCancel }: TaskFormProp
               id="dueDate"
               type="date"
               value={formData.dueDate}
-              onChange={(e) => handleInputChange('dueDate', e.target.value)}
+              onChange={(e) => handleInputChange("dueDate", e.target.value)}
             />
           </div>
 
@@ -161,11 +175,11 @@ export default function TaskForm({ task, onTaskCreated, onCancel }: TaskFormProp
               Cancel
             </Button>
             <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Saving...' : task ? 'Update Task' : 'Create Task'}
+              {isLoading ? "Saving..." : task ? "Update Task" : "Create Task"}
             </Button>
           </div>
         </form>
       </CardContent>
     </Card>
-  )
+  );
 }
