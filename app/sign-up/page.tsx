@@ -11,6 +11,7 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card";
+import Link from "next/link";
 
 export default function SignupPage() {
   const [form, setForm] = useState({
@@ -90,6 +91,12 @@ export default function SignupPage() {
               Sign Up
             </Button>
           </form>
+          <div className="mt-4 text-sm text-gray-600 text-center">
+            Already have an account?{" "}
+            <Link href="/login" className="underline hover:no-underline">
+              Login
+            </Link>
+          </div>
           {error && <p className="text-red-500 mt-2">{error}</p>}
           {success && <p className="text-green-500 mt-2">{success}</p>}
         </CardContent>

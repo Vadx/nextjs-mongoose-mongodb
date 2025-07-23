@@ -13,6 +13,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import Link from "next/link";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -84,9 +85,9 @@ export default function LoginPage() {
             <div className="mt-1">
               <p className="text-sm text-gray-600 text-center">
                 Don{"'"}t have an account?{" "}
-                <a href="/sign-up" className="underline hover:no-underline">
+                <Link href="/sign-up" className="underline hover:no-underline">
                   Sign Up
-                </a>
+                </Link>
               </p>
             </div>
           </form>
