@@ -58,7 +58,11 @@ export default function DashboardPage() {
   };
 
   if (status === "loading" || isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <div className="text-gray-500">Loading...</div>
+      </div>
+    );
   }
 
   if (!session) {
